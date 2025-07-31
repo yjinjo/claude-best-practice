@@ -30,8 +30,15 @@ export interface FeedbackResponse {
 
 export const apiService = {
   validateUrl: async (url: string): Promise<ValidationResponse> => {
-    const response = await api.post('/validate-url', { url });
-    return response.data;
+    try {
+      console.log('API 요청 시작:', { url, endpoint: '/validate-url' });
+      const response = await api.post('/validate-url', { url });
+      console.log('API 응답 성공:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('API 요청 실패:', error);
+      throw error;
+    }
   },
 
   generateSummary: async (url: string, persona: PersonaType): Promise<SummaryResponse> => {

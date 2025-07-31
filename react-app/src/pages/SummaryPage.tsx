@@ -12,7 +12,6 @@ import {
   Alert,
   Snackbar,
   Paper,
-  Divider,
   useTheme,
   alpha,
 } from '@mui/material';
@@ -25,8 +24,11 @@ import {
   Code as DeveloperIcon,
   Business as ProductManagerIcon,
   Palette as DesignerIcon,
+  Description as GeneralIcon,
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 import { useApp } from '../context/AppContext';
 import apiService from '../services/api';
@@ -68,6 +70,13 @@ const SummaryPage: React.FC = () => {
 
   const getPersonaInfo = () => {
     switch (selectedPersona) {
+      case 'general':
+        return {
+          title: '일반',
+          icon: GeneralIcon,
+          color: '#6c757d',
+          gradient: 'linear-gradient(135deg, #6c757d, #495057)',
+        };
       case 'developer':
         return {
           title: '개발자',
@@ -92,45 +101,13 @@ const SummaryPage: React.FC = () => {
       default:
         return {
           title: '사용자',
-          icon: DeveloperIcon,
-          color: '#4285f4',
-          gradient: 'linear-gradient(135deg, #4285f4, #34a853)',
+          icon: GeneralIcon,
+          color: '#6c757d',
+          gradient: 'linear-gradient(135deg, #6c757d, #495057)',
         };
     }
   };
 
-  const formatSummary = (summary: string) => {
-    // Convert markdown-like formatting to JSX
-    const parts = summary.split(/(\*\*.*?\*\*|\*.*?\*|##.*?(?=\n|$))/g);
-    
-    return parts.map((part, index) => {
-      if (part.match(/^\*\*(.*?)\*\*$/)) {
-        return <strong key={index}>{part.replace(/^\*\*(.*?)\*\*$/, '$1')}</strong>;
-      } else if (part.match(/^\*(.*?)\*$/)) {
-        return <em key={index}>{part.replace(/^\*(.*?)\*$/, '$1')}</em>;
-      } else if (part.match(/^##(.*)$/)) {
-        return (
-          <Typography
-            key={index}
-            variant="h3"
-            component="h3"
-            sx={{
-              fontSize: '1.25rem',
-              fontWeight: 600,
-              mt: 3,
-              mb: 1.5,
-              color: theme.palette.text.primary,
-              borderBottom: `2px solid ${alpha(theme.palette.primary.main, 0.2)}`,
-              pb: 0.5,
-            }}
-          >
-            {part.replace(/^##\s*/, '')}
-          </Typography>
-        );
-      }
-      return <span key={index}>{part}</span>;
-    });
-  };
 
   if (!summaryData) {
     return (
@@ -258,13 +235,40 @@ const SummaryPage: React.FC = () => {
                 }}
               >
                 <CardContent sx={{ p: 4 }}>
-                  <Typography
-                    variant="body1"
-                    component="div"
+                  <Box
                     sx={{
-                      lineHeight: 1.7,
-                      fontSize: '1rem',
-                      '& p': { mb: 2 },
+                      '& h2': {
+                        fontSize: '1.25rem',
+                        fontWeight: 600,
+                        mt: 3,
+                        mb: 1.5,
+                        color: theme.palette.text.primary,
+                        borderBottom: `2px solid ${alpha(theme.palette.primary.main, 0.2)}`,
+                        pb: 0.5,
+                        '&:first-of-type': {
+                          mt: 0,
+                        },
+                      },
+                      '& h3': {
+                        fontSize: '1.1rem',
+                        fontWeight: 600,
+                        mt: 2.5,
+                        mb: 1,
+                        color: theme.palette.text.primary,
+                      },
+                      '& p': {
+                        mb: 2,
+                        lineHeight: 1.7,
+                        fontSize: '1rem',
+                      },
+                      '& ul, & ol': {
+                        mb: 2,
+                        pl: 3,
+                      },
+                      '& li': {
+                        mb: 0.5,
+                        lineHeight: 1.6,
+                      },
                       '& strong': { 
                         color: theme.palette.primary.main,
                         fontWeight: 600,
@@ -273,10 +277,56 @@ const SummaryPage: React.FC = () => {
                         color: theme.palette.secondary.main,
                         fontStyle: 'italic',
                       },
+                      '& code': {
+                        backgroundColor: alpha(theme.palette.grey[500], 0.1),
+                        padding: '2px 4px',
+                        borderRadius: '4px',
+                        fontSize: '0.875rem',
+                        fontFamily: 'monospace',
+                      },
+                      '& blockquote': {
+                        borderLeft: `4px solid ${theme.palette.primary.main}`,
+                        pl: 2,
+                        ml: 0,
+                        fontStyle: 'italic',
+                        color: theme.palette.text.secondary,
+                      },
                     }}
                   >
-                    {formatSummary(summaryData.summary)}
-                  </Typography>
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      components={{
+                        h2: ({ children }) => (
+                          <Typography variant="h2" component="h2" sx={{ 
+                            fontSize: '1.25rem', 
+                            fontWeight: 600, 
+                            mt: 3, 
+                            mb: 1.5,
+                            '&:first-of-type': { mt: 0 }
+                          }}>
+                            {children}
+                          </Typography>
+                        ),
+                        h3: ({ children }) => (
+                          <Typography variant="h3" component="h3" sx={{ 
+                            fontSize: '1.1rem', 
+                            fontWeight: 600, 
+                            mt: 2.5, 
+                            mb: 1 
+                          }}>
+                            {children}
+                          </Typography>
+                        ),
+                        p: ({ children }) => (
+                          <Typography variant="body1" component="p" sx={{ mb: 2, lineHeight: 1.7 }}>
+                            {children}
+                          </Typography>
+                        ),
+                      }}
+                    >
+                      {summaryData.summary}
+                    </ReactMarkdown>
+                  </Box>
                 </CardContent>
               </Card>
             </motion.div>

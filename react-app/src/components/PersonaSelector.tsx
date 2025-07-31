@@ -11,6 +11,7 @@ import {
   Code as DeveloperIcon,
   Business as ProductManagerIcon,
   Palette as DesignerIcon,
+  Description as GeneralIcon,
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 
@@ -21,6 +22,14 @@ interface PersonaSelectorProps {
 }
 
 const personas = [
+  {
+    id: 'general' as PersonaType,
+    title: '일반',
+    description: '모든 직군이 이해할 수 있는 핵심 내용 중심으로 요약',
+    icon: GeneralIcon,
+    color: '#6c757d',
+    gradient: 'linear-gradient(135deg, #6c757d, #495057)',
+  },
   {
     id: 'developer' as PersonaType,
     title: '개발자',
@@ -84,7 +93,7 @@ const PersonaSelector: React.FC<PersonaSelectorProps> = ({ onPersonaSelect }) =>
 
       <Box sx={{ 
         display: 'grid', 
-        gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, 
+        gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' }, 
         gap: 3,
       }}>
         {personas.map((persona, index) => {

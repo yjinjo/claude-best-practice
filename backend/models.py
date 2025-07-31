@@ -18,7 +18,7 @@ class URLValidationResponse(BaseModel):
 class SummarizationRequest(BaseModel):
     """요약 생성 요청 모델"""
     url: str
-    persona: Literal["developer", "product_manager", "designer"]
+    persona: Literal["general", "developer", "product_manager", "designer"]
 
 class SummarizationResponse(BaseModel):
     """요약 생성 응답 모델"""

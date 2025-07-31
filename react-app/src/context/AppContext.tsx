@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-export type PersonaType = 'developer' | 'product_manager' | 'designer';
+export type PersonaType = 'general' | 'developer' | 'product_manager' | 'designer';
 
 export interface SummaryData {
   title: string;

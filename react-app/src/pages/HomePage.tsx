@@ -15,7 +15,7 @@ import {
 import { Search as SearchIcon } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 
-import { useApp } from '../context/AppContext';
+import { useApp, PersonaType } from '../context/AppContext';
 import PersonaSelector from '../components/PersonaSelector';
 import apiService from '../services/api';
 
@@ -59,13 +59,14 @@ const HomePage: React.FC = () => {
         setUrlError(validation.message || '문서에 접근할 수 없습니다.');
       }
     } catch (error) {
-      setUrlError('URL 검증 중 오류가 발생했습니다.');
+      console.error('URL 검증 API 호출 오류:', error);
+      setUrlError(`URL 검증 중 오류가 발생했습니다: ${error}`);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handlePersonaSelect = async (persona: 'developer' | 'product_manager' | 'designer') => {
+  const handlePersonaSelect = async (persona: PersonaType) => {
     setSelectedPersona(persona);
     
     try {
